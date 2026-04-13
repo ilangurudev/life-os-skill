@@ -1,5 +1,7 @@
 # Birthday Reminder Guidance
 
+Load this file when setting up or modifying birthday reminders specifically. For general reminder/cron mechanics, see [reminders.md](./reminders.md).
+
 Use relationship-aware default reminder cadences for birthdays unless the user explicitly overrides them.
 
 ## Default Cadences
