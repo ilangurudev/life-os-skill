@@ -36,7 +36,7 @@ For task reminders, keep these fields synced in the task frontmatter:
 
 - **"Snooze"** → pick a reasonable snooze duration (e.g. 1 day, 3 days, 1 week depending on the task context), update the cron job, append the reminder that just fired to `last_5_reminder_times` (newest first, max 5), then explicitly tell Guru when they'll get the next reminder. Offer alternatives like "I'll remind you again Friday. Want a different day?"
 - **"Remind me [day/time]"** → calculate the date, update cron to that day at 9:00 AM, confirm the new time
-- **"Done" or "already handled"** → remove the cron job via cron(action='remove')
+- **"Done" or "already handled"** → for one-off reminders, remove the cron job via `cron(action='remove')`; for genuinely recurring reminders (daily/weekly/every-N-days/monthly cadence), do NOT remove the recurring cron. Instead record the completion, append the just-fired reminder time to `last_5_reminder_times`, keep the task active unless the user explicitly wants the routine ended, and sync `next_reminder_time` to the next scheduled run.
 - **"Re-establish" / "set that up again" / "bring that reminder back"** → FIRST search existing task files, people/project notes, active cron jobs, and session history to recover the previous setup before creating anything new. Reuse the prior cadence/checklist/linking style when recoverable; only ask a follow-up if the old schedule is genuinely unclear.
 - Always keep `cron_id`, `next_reminder_time`, and `last_5_reminder_times` in sync in the task file after any of these operations.
 
@@ -44,10 +44,10 @@ For task reminders, keep these fields synced in the task frontmatter:
 
 When Guru replies to a cron reminder on Telegram, the quoted snippet identifies which task/reminder they're responding to. Use that to find and edit the correct task file:
 
-- **"Done"** → update status to `done`, remove cron job, preserve/update `last_5_reminder_times` if the reminder just fired
+- **"Done"** → if the reminder is one-off, update status to `done` and remove the cron job; if it is recurring, log the completion without removing the recurring cron, preserve/update `last_5_reminder_times`, and sync `next_reminder_time` to the next run
 - **"Snooze"** → set `snoozed_until`, update cron schedule, append the just-fired reminder time to `last_5_reminder_times`, trim to newest 5, sync `next_reminder_time`
 - **"Remind me Thursday"** → calculate date, update task `due_date` and cron, keep `last_5_reminder_times` as-is, sync `next_reminder_time`
-- **"Already handled"** → mark done, remove cron job, preserve/update `last_5_reminder_times`
+- **"Already handled"** → treat the same as "Done" — one-offs close out, recurring reminders stay alive unless Guru explicitly wants the routine stopped
 - **Any other reply** → treat as a note/update on that specific task file, append timestamped content, and sync `last_5_reminder_times` if the reply is clearly to a reminder that just went out
 
 Tone: conversational, not robotic. "Lavanya's birthday is in 2 weeks. Thought about what to get her?" not "REMINDER: Birthday upcoming."

@@ -59,12 +59,15 @@ Load these files only when the conversation triggers them. Each is self-containe
 - **Kebab-case everything.** Filenames must use lowercase hyphenated slugs, e.g. `alfie-routine-care.md`. Wikilinks must use the exact filename stem: `[[alfie-routine-care]]`, never `[[Alfie routine care]]`. Daily logs keep their `YYYY-MM-DD` format.
 - **Clean up placeholders.** If a temporary placeholder note was created (e.g. `father.md`) and the user later clarifies the preferred name (e.g. `Dad` or `John`), immediately: rename the file, update all wikilinks and user-context references, preserve the full/legal name in the body if useful.
 - **Strict frontmatter, freeform body.** Maintain the frontmatter fields from the `_template.md` in each category. Do not add arbitrary frontmatter fields. All extra info goes in the markdown body.
+- **Schema migrations must hit templates and live files.** If a frontmatter field is added, removed, renamed, or retyped, update every relevant `_template.md` and backfill all existing notes of that content type in the same pass. When the user asks for historical backfill, derive values from stable file metadata where possible (for example, use each file's modified time when introducing an `updated` field) instead of inventing timestamps.
+- **Preserve provenance when backfilling from file metadata.** If the value you are backfilling comes from file metadata that your edit would overwrite — especially modified time — capture that metadata before writing, use it to populate the new field, and preserve or restore the original mtime afterward for the files where that timestamp is now the canonical historical value.
+- **Record migration status in the vault.** When a schema migration changes many Life OS files, update the canonical note about that schema/design topic if one exists, and reflect the migration in `user-context.md` itself so future sessions know it already happened. No separate `## Changelog` section is needed there — `user-context.md` is already a rolling current-state/change-log hybrid.
 - **Wikilink everything.** Keep notes linked using wikilinks. This is what makes the system powerful and traversible.
 
 ### State Management
 
-- **Changelog in every file.** Always append to a `## Changelog` section (newest first). Keep the most current, important information at the top of every md file and the changelog at the bottom. This maintains the user's audit trail.
-- **Keep user-context.md current.** After any change to source files, update `~/my-data/user-context.md` — keep it current, relevant, concise, and pruned. Link actual notes so it functions as an index for subsequent conversations. Keep newest first. Remove content older than 10 days and keep the `Current Context` items to top 25 items.
+- **Changelog in normal notes.** For regular Life OS notes, always append to a `## Changelog` section (newest first). Keep the most current, important information at the top of each md file and the changelog at the bottom. This maintains the user's audit trail.
+- **Treat user-context.md differently.** `~/my-data/user-context.md` does not need a separate `## Changelog` section. The file itself is the rolling snapshot/change log. After any change to source files, update it to reflect what changed, keep it current, relevant, concise, and pruned, and link actual notes so it functions as an index for subsequent conversations. Keep newest first. Remove content older than 10 days and keep the `Current Context` items to top 25 items.
 
 ## Response Formatting
 
