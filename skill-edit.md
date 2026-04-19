@@ -2,6 +2,10 @@
 
 Meta guidance for agents making changes to the life-os skill files themselves.
 
+# The most important rule
+
+If you have a change you want to make, ALWAYS DISCUSS WITH THE USER. Do not auto-edit these files. It's crucial that the user is aware of any changes to the skills.
+
 ## Progressive Disclosure Model
 
 The skill is structured around progressive disclosure — **do not collapse everything into SKILL.md**:

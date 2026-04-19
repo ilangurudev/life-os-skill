@@ -42,7 +42,6 @@ Keep it lightweight and socially useful.
 When you set birthday reminders:
 - Store the birthday date in the person note.
 - Record the chosen cadence in the person note and/or task note.
-- Keep reminder language warm and natural.
 - For advance reminders, include a gentle action nudge when appropriate.
 
 ## Cron Guidance
