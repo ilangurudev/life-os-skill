@@ -19,7 +19,7 @@ Load this file whenever creating, modifying, snoozing, cancelling, or asking abo
 
 See also: [Birthday Reminders](./birthday-reminders.md) for relationship-aware cadences by closeness tier.
 
-## Reminder Metadata Sync
+## Cron - Reminder Metadata Sync
 
 For task reminders, keep these fields synced in the task frontmatter:
 - `cron_id` — the cron job ID (or comma-separated list if multiple crons)
@@ -32,25 +32,17 @@ For task reminders, keep these fields synced in the task frontmatter:
 - When the user asks for a specific reminder time, use that exact time. Only fall back to a reasonable default like 9:00 AM when they gave a vague time window such as "tomorrow morning," and say what default you picked.
 - For recurring reminders created via `cronjob`, prefer explicit cron syntax (e.g. `0 16 * * 0`) over natural-language schedules if precision matters. Verify the created job's `next_run_at`, then sync that exact next occurrence back into the task frontmatter `next_reminder_time` and `cron_id`, while leaving `last_5_reminder_times` at `never sent` for a brand-new reminder or preserving the existing history for an updated reminder.
 
-## Snooze / Cancel / Re-establish
-
-- **"Snooze"** → pick a reasonable snooze duration (e.g. 1 day, 3 days, 1 week depending on the task context), update the cron job, append the reminder that just fired to `last_5_reminder_times` (newest first, max 5), then explicitly tell Guru when they'll get the next reminder. Offer alternatives like "I'll remind you again Friday. Want a different day?"
-- **"Remind me [day/time]"** → calculate the date, update cron to that day at 9:00 AM, confirm the new time
-- **"Done" or "already handled"** → for one-off reminders, remove the cron job via `cron(action='remove')`; for genuinely recurring reminders (daily/weekly/every-N-days/monthly cadence), do NOT remove the recurring cron. Instead record the completion, append the just-fired reminder time to `last_5_reminder_times`, keep the task active unless the user explicitly wants the routine ended, and sync `next_reminder_time` to the next scheduled run.
-- **"Re-establish" / "set that up again" / "bring that reminder back"** → FIRST search existing task files, people/project notes, active cron jobs, and session history to recover the previous setup before creating anything new. Reuse the prior cadence/checklist/linking style when recoverable; only ask a follow-up if the old schedule is genuinely unclear.
-- Always keep `cron_id`, `next_reminder_time`, and `last_5_reminder_times` in sync in the task file after any of these operations.
-
 ## Telegram Reply Targeting
 
-When Guru replies to a cron reminder on Telegram, the quoted snippet identifies which task/reminder they're responding to. Use that to find and edit the correct task file:
+When the user replies to a cron reminder on Telegram, the quoted snippet identifies which task/reminder they're responding to. Use that to find and edit the correct task file, appropriately. They might say done, snooze, rmeind me at x, etc. and you can edit the task/cron accoridngly. 
 
-- **"Done"** → if the reminder is one-off, update status to `done` and remove the cron job; if it is recurring, log the completion without removing the recurring cron, preserve/update `last_5_reminder_times`, and sync `next_reminder_time` to the next run
-- **"Snooze"** → set `snoozed_until`, update cron schedule, append the just-fired reminder time to `last_5_reminder_times`, trim to newest 5, sync `next_reminder_time`
-- **"Remind me Thursday"** → calculate date, update task `due_date` and cron, keep `last_5_reminder_times` as-is, sync `next_reminder_time`
-- **"Already handled"** → treat the same as "Done" — one-offs close out, recurring reminders stay alive unless Guru explicitly wants the routine stopped
-- **Any other reply** → treat as a note/update on that specific task file, append timestamped content, and sync `last_5_reminder_times` if the reply is clearly to a reminder that just went out
+## Snooze / Cancel / Re-establish
 
-Tone: conversational, not robotic. "Lavanya's birthday is in 2 weeks. Thought about what to get her?" not "REMINDER: Birthday upcoming."
+- **"Done" or "already handled"** → for one-off reminders, remove the cron job via `cron(action='remove')`; for genuinely recurring reminders (daily/weekly/every-N-days/monthly cadence), do NOT remove the recurring cron. Instead record the completion in changelog, update the frontmatter fields, append the just-fired reminder time to `last_5_reminder_times`, keep the task active unless the user explicitly wants the routine ended, and sync `next_reminder_time` to the next scheduled run.
+   - Reminder tool quirk worth remembering: the `cronjob` tool does not accept update strings like `every 3 days at 8:00 PM`. For every-N-days reminder changes, verify the resulting `next_run_at` after updating, and prefer explicit cron syntax or a one-off snooze plus follow-up re-establish flow instead of assuming natural-language parsing will work.
+- **"Snooze"** → If vague, pick a reasonable snooze duration (e.g. 1 day, 3 days, 1 week depending on the task context), update the cron job, append the reminder that just fired to `last_5_reminder_times` (newest first, max 5), then explicitly tell Guru when they'll get the next reminder. Offer alternatives like "I'll remind you again Friday. Want a different day?"
+- **"Remind me [day/time]"** → calculate the date, update cron to that day at 9:00 AM, confirm the new time
+- **"Re-establish" / "set that up again" / "bring that reminder back"** → FIRST search existing task files, people/project notes, active cron jobs, and session history to recover the previous setup before creating anything new. Reuse the prior cadence/checklist/linking style when recoverable; only ask a follow-up if the old schedule is genuinely unclear.
 
 ## Cron Prompt Template
 
@@ -70,6 +62,10 @@ Task created via life-os skill. Refer to note at https://ilangurudev.github.io/o
 - Put that exact sentence on its own final line.
 ```
 
+When building a cron prompt for any reminder that depends on context beyond the task note itself, explicitly include every required file path in the prompt and instruct the cron run to read them at runtime (for example `user-context.md`, a linked checklist note, or a source note like a quotes log). Cron runs are fresh sessions and will not reliably infer extra sources unless told.
+
+Tone: conversational, not robotic. "Lavanya's birthday is in 2 weeks. Thought about what to get her?" not "REMINDER: Birthday upcoming."
+
 ## Response Overrides for Cron Reminders
 
 These override the normal life-os response formatting when the message is a cron reminder:
@@ -77,3 +73,5 @@ These override the normal life-os response formatting when the message is a cron
 - Do not add an `Open questions:` footer to cron reminders unless the cron prompt explicitly asks for it.
 
 Don't forget to update `~/my-data/user-context.md` after creating or modifying any cron!
+
+
