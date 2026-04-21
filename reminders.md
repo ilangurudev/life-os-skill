@@ -66,65 +66,6 @@ When building a cron prompt for any reminder that depends on context beyond the 
 
 Tone: conversational, not robotic. "Lavanya's birthday is in 2 weeks. Thought about what to get her?" not "REMINDER: Birthday upcoming."
 
-## Daily Safety-Net Reconciliation Pattern
-
-When designing or implementing reminder reliability, prefer a two-layer model:
-
-### Layer 1: baseline task-level reminder cron
-- Owns the normal cadence for the task
-- Reads the task file before sending
-- Sends the scheduled reminder
-- Writes reminder-send state back into the task file
-
-### Layer 2: daily safety-net reconciliation cron
-- Runs as a central repair/escalation worker (Guru currently prefers 1:00 AM in their timezone)
-- Scans open tasks for reminder drift, stale state, and missing/broken reminder linkage
-- Is allowed to create or update cron jobs automatically with minimal user intervention
-- Should create/update real reminder crons using the same life-os reminder prompt template and note-link rules, not some alternate message format
-
-Use the safety-net layer to classify tasks into buckets such as:
-- healthy
-- missing cron
-- broken cron linkage
-- overdue with no future reminder
-- unresolved after reminder
-- recurring drift
-- stale / review-needed
-
-## Escalation Rules
-
-Treat a missed reminder as a real miss immediately; do not assume silence means completion.
-
-For one-off tasks without urgent due-date pressure, Guru's preferred default escalation ladder is:
-- next day
-- 2 days later
-- 2 days later
-- weekly thereafter until dispositioned
-
-For tasks with a due date, compress that ladder and become more aggressive as the due date approaches.
-
-## Recurring Task Occurrence Model
-
-Recurring tasks are special: the task itself usually stays active (`status: todo`) even after one occurrence is completed.
-
-Use this model:
-- Keep the recurring task itself active unless the user explicitly retires/cancels it
-- Treat `completed_time` as the timestamp of the last completed occurrence for recurring tasks
-- Keep the audit trail in the changelog for each completion/snooze/skip/disposition
-- Keep `next_reminder_time` as the next baseline scheduled reminder from the recurring cadence
-
-Miss detection for recurring tasks should reason about the latest occurrence, not whether the task is globally done forever. A practical rule:
-- if the latest reminder-send time is newer than `completed_time`, that occurrence is still unresolved
-- if `completed_time` is after the latest reminder-send time, the latest occurrence was handled
-
-When a recurring occurrence remains unresolved, the safety-net may create a temporary follow-up cron that nags until that occurrence is dispositioned, while leaving the baseline recurring cron intact.
-
-When the user handles that occurrence:
-- update `completed_time` if completed
-- record snoozed/skipped/completed in the changelog
-- remove the temporary follow-up cron
-- keep the baseline recurring cron unless the user wants the whole routine ended
-
 ## Response Overrides for Cron Reminders
 
 These override the normal life-os response formatting when the message is a cron reminder:
