@@ -24,7 +24,7 @@ Treat the vault folders like typed tables:
 - `notes/` = ideas, concepts, observations, freeform knowledge
 - `projects/` = coordination and execution context
 - `goals/` = higher-level outcomes
-- `check-ins/` and `daily-logs/` = reflective/history records
+- `check-ins/` and `journal/` = reflective/history records
 
 Default routing rules:
 - If the request is about actions, reminders, due windows, or operational status -> query `tasks/` first

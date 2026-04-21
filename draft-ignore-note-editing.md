@@ -2,7 +2,7 @@ Load this when editing, revising, restructuring, deduplicating, or cleaning up e
 
 # Note Editing Checklist
 
-Follow this checklist in order. This file is for editing existing Life OS notes across `people`, `projects`, `tasks`, `goals`, `notes`, `check-ins`, `daily-logs`, and `user-context.md`.
+Follow this checklist in order. This file is for editing existing Life OS notes across `people`, `projects`, `tasks`, `goals`, `notes`, `check-ins`, `journal`, and `user-context.md`.
 
 ## 1. Ground yourself first
 
