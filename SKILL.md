@@ -36,6 +36,7 @@ Load these files only when the conversation triggers them. Each is self-containe
 |---|---|
 | Creating, modifying, snoozing, or asking about tasks/reminders/crons | [reminders.md](./reminders.md) |
 | Birthday reminders specifically (in addition to reminders.md) | [birthday-reminders.md](./birthday-reminders.md) |
+| Structured retrieval, list/filter requests, dashboards, or schema-aware queries over the vault | [query-guidance.md](./query-guidance.md) |
 | Vault-wide cleanup or canonicalization pass | [cleanup-guidance.md](./cleanup-guidance.md) |
 | Editing rules for Hermes for improving skill's own utility. If editing this skill or associated files, always follow the guidance outlined in this doc | [skill-edit.md](./skill-edit.md) |
 
@@ -59,7 +60,9 @@ Load these files only when the conversation triggers them. Each is self-containe
 - **Kebab-case everything.** Filenames must use lowercase hyphenated slugs, e.g. `alfie-routine-care.md`. Wikilinks must use the exact filename stem: `[[alfie-routine-care]]`, never `[[Alfie routine care]]`. Daily logs keep their `YYYY-MM-DD` format.
 - **Clean up placeholders.** If a temporary placeholder note was created (e.g. `father.md`) and the user later clarifies the preferred name (e.g. `Dad` or `John`), immediately: rename the file, update all wikilinks and user-context references, preserve the full/legal name in the body if useful.
 - **Strict frontmatter, freeform body.** Maintain the frontmatter fields from the `_template.md` in each category. Do not add arbitrary frontmatter fields. All extra info goes in the markdown body.
+- **Use note `project` sparingly.** Notes may carry an optional single `project` only when the note is primarily in service of that project. Leave it blank for broad, evergreen, or multi-home notes.
 - **Wikilink everything.** Keep notes linked using wikilinks. This is what makes the system powerful and traversible.
+- **Embedded media lives in the vault-level assets folder.** For images/files you want visible inside notes, store them under `~/my-data/assets/` and embed them with vault-root paths like `![[assets/example.jpg]]`. Do not assume per-note or per-folder `assets/` directories exist.
 
 ### State Management
 
