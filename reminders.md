@@ -55,7 +55,7 @@ Base the reminder on the task file so it reflects the current state.
 
 CRITICAL OUTPUT RULES:
 - Your final output must end with exactly this sentence, character-for-character except for normal URL rendering:
-Task created via life-os skill. Refer to note at https://ilangurudev.github.io/obsidian-links/?file=<folder>/<file>.md.
+Task created via life-os skill. Refer to [<note-name>](https://ilangurudev.github.io/obsidian-links/?file=<folder>/<file>.md).
 - Do not rename that line to "Task note" or any other label.
 - Do not add an "Open questions" section.
 - Do not add any text after that exact final sentence.
