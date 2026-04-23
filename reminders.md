@@ -64,6 +64,20 @@ When that happens:
 - Update linked project/person/note references so they point at the new canonical task, while keeping the old task as an audit-trail note with a pointer to the replacement.
 - Update `user-context.md` to mention the newly canonical task, not the retired one.
 
+This keeps the vault clean and prevents old task names from lying about what the reminder is actually for.## When the task scope changes
+
+Sometimes the user is not really saying "done" or "snooze" — they are saying the old task is now the wrong shape.
+
+Common pattern: a very specific recurring task ("set up X") becomes unnecessary because the broad constraint is solved (for example a general default day/time now exists), but the user still wants a lighter recurring nudge around the broader topic.
+
+When that happens:
+- Close the old specific task instead of letting it limp along forever.
+- Remove its recurring cron rather than silently reusing it for a different purpose.
+- Create a new canonical task whose title and description match the broader ongoing need.
+- Pick a sensible default reminder time if the user gave only a window like "Sunday afternoons/evenings"; record that reasoning in the note.
+- Update linked project/person/note references so they point at the new canonical task, while keeping the old task as an audit-trail note with a pointer to the replacement.
+- Update `user-context.md` to mention the newly canonical task, not the retired one.
+
 This keeps the vault clean and prevents old task names from lying about what the reminder is actually for.
 
 ## Cron Prompt Template
