@@ -67,8 +67,6 @@ Load these files only when the conversation triggers them. Each is self-containe
 ### State Management
 
 - **Changelog in normal notes.** For regular Life OS notes, always append to a `## Changelog` section (newest first). Keep the most current, important information at the top of each md file and the changelog at the bottom. This maintains the user's audit trail.
-- **Shared scripts for recurring maintenance.** For recurring maintenance/automation jobs, keep the cron prompt thin and put the real logic in a shared script under `~/.hermes/scripts/` instead of stuffing bespoke logic into each cron prompt. Treat the task note as policy/source-of-truth, the shared script as implementation, and the cron as scheduler/orchestrator.
-- **Hide machine logs from the main graph.** When an automation writes machine-generated audit output, prefer a hidden vault folder like `.agents-log/` with timestamped files plus an optional stable `latest.md`.
 - **Treat user-context.md differently.** `~/my-data/user-context.md` does not need a separate `## Changelog` section. The file itself is the rolling snapshot/change log. After any change to source files, update it to reflect what changed, keep it current, relevant, concise, and pruned, and link actual notes so it functions as an index for subsequent conversations. Keep newest first. Remove content older than 10 days and keep the `Current Context` items to top 25 items.
 
 ## Response Formatting

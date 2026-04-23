@@ -15,12 +15,12 @@ Load this file whenever creating, modifying, snoozing, cancelling, or asking abo
 - If `due_date` is today or tomorrow, remind in a few hours instead
 - Save the cron job_id in the task frontmatter as `cron_id` so it can be updated later
 - On task creation, initialize `last_5_reminder_times` in the task frontmatter to `never sent` unless this is a legacy reminder migration with known prior history
-- For recurring maintenance/cleanup/lint jobs, keep the real logic in a shared script under `~/.hermes/scripts/life-os/` and keep the cron prompt focused on orchestration + reporting. Do not let similar maintenance jobs drift into bespoke per-cron implementations.
-- For those maintenance jobs, prefer writing audit output into `~/my-data/.agents-log/` (for example timestamped reports plus `latest.md`) so runs are debuggable and the vault keeps a durable machine log.
 - **Never create a cron without a backing task file first**
 - **If a task is very likely to want a reminder (which is almost always true), create a cron immediately after creating the file.** User will request a change to the reminder schedule if needed.
+- As for the due date, assign it if it's clear or add to list of open questions to get clarity from user. The reminder request time is not the due date.  
 
 See also: [Birthday Reminders](./birthday-reminders.md) for relationship-aware cadences by closeness tier.
+See also: [Maintainence & Linting Crons](./maintainenance-linting-crons.md) for guidance when setting up jobs to ensure vault health and consistency. 
 
 ## Cron - Reminder Metadata Sync
 
