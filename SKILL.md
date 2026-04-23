@@ -36,7 +36,6 @@ Load these files only when the conversation triggers them. Each is self-containe
 |---|---|
 | Creating, modifying, snoozing, or asking about tasks/reminders/crons | [reminders.md](./reminders.md) |
 | Birthday reminders specifically (in addition to reminders.md) | [birthday-reminders.md](./birthday-reminders.md) |
-| Structured retrieval, list/filter requests, dashboards, or schema-aware queries over the vault | [query-guidance.md](./query-guidance.md) |
 | Vault-wide cleanup or canonicalization pass | [cleanup-guidance.md](./cleanup-guidance.md) |
 | Editing rules for Hermes for improving skill's own utility. If editing this skill or associated files, always follow the guidance outlined in this doc | [skill-edit.md](./skill-edit.md) |
 
@@ -61,16 +60,18 @@ Load these files only when the conversation triggers them. Each is self-containe
 - **Kebab-case everything.** Filenames must use lowercase hyphenated slugs, e.g. `alfie-routine-care.md`. Wikilinks must use the exact filename stem: `[[alfie-routine-care]]`, never `[[Alfie routine care]]`. Daily logs keep their `YYYY-MM-DD` format.
 - **Clean up placeholders.** If a temporary placeholder note was created (e.g. `father.md`) and the user later clarifies the preferred name (e.g. `Dad` or `John`), immediately: rename the file, update all wikilinks and user-context references, preserve the full/legal name in the body if useful.
 - **Strict frontmatter, freeform body.** Maintain the frontmatter fields from the `_template.md` in each category. Do not add arbitrary frontmatter fields. All extra info goes in the markdown body.
-- **Use note `project` sparingly.** Notes may carry an optional single `project` only when the note is primarily in service of that project. Leave it blank for broad, evergreen, or multi-home notes.
 - **Wikilink everything.** Keep notes linked using wikilinks. This is what makes the system powerful and traversible.
 - **Embedded media lives in the vault-level assets folder.** For images/files you want visible inside notes, store them under `~/my-data/assets/` and embed them with vault-root paths like `![[assets/example.jpg]]`. Do not assume per-note or per-folder `assets/` directories exist.
+- **Use note `project` sparingly.** Notes may carry an optional single `project` only when the note is primarily in service of that project. Leave it blank for broad, evergreen, or multi-home notes.
 
 ### State Management
 
 - **Changelog in normal notes.** For regular Life OS notes, always append to a `## Changelog` section (newest first). Keep the most current, important information at the top of each md file and the changelog at the bottom. This maintains the user's audit trail.
+- **Shared scripts for recurring maintenance.** For recurring maintenance/automation jobs, keep the cron prompt thin and put the real logic in a shared script under `~/.hermes/scripts/` instead of stuffing bespoke logic into each cron prompt. Treat the task note as policy/source-of-truth, the shared script as implementation, and the cron as scheduler/orchestrator.
+- **Hide machine logs from the main graph.** When an automation writes machine-generated audit output, prefer a hidden vault folder like `.agents-log/` with timestamped files plus an optional stable `latest.md`.
 - **Treat user-context.md differently.** `~/my-data/user-context.md` does not need a separate `## Changelog` section. The file itself is the rolling snapshot/change log. After any change to source files, update it to reflect what changed, keep it current, relevant, concise, and pruned, and link actual notes so it functions as an index for subsequent conversations. Keep newest first. Remove content older than 10 days and keep the `Current Context` items to top 25 items.
 
 ## Response Formatting
 
-- Include clickable Obsidian links via the GitHub Pages applet: `https://ilangurudev.github.io/obsidian-links/?file=<folder>/<file>.md` (use the exact kebab-case filename).
+- Include clickable note links. Prefer a dashboard note URL built from `LIFEOS_EXTERNAL_BASE_URL` as `<base>/note/<slug>` when that external base is available. Otherwise fall back to the GitHub Pages Obsidian applet `https://ilangurudev.github.io/obsidian-links/?file=<folder>/<file>.md`. Use the exact kebab-case slug/path. Use markdown to link to the notes like [slug](url)
 - End responses with any open questions captured in the notes. Keep them natural and optional — just ask conversationally, don't label them "Open Questions." If there are none, say nothing about it.
