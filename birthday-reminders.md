@@ -35,6 +35,7 @@ Keep it lightweight and socially useful.
 - Treat coworker, colleague, teammate, manager, direct report, and similar workplace relationships as Colleagues.
 - If the birth year is unknown but month/day is known, still create the birthday reminder setup using the known month/day and keep the missing birth year as an open question in the note.
 - If the relationship is ambiguous, make a reasonable default based on what the user said and record it in the note.
+- For batch birthday captures, use known relationships in the same batch as context. If several names are known colleagues/work stakeholders and new names are grouped with them, default unknown people in that batch to colleague cadence, but record the inference and an open question so Guru can upgrade them later if they are close friends/family.
 - If the user gives an explicit cadence, that overrides these defaults.
 
 ## Task / Note Recording
@@ -50,3 +51,15 @@ When you set birthday reminders:
 - Then create one recurring yearly cron job per reminder touchpoint.
 - Save all relevant cron job IDs back into the task note's `cron_id` field as a comma-separated list if needed.
 - Update `~/my-data/user-context.md` after changes.
+
+## Relationship Corrections / Cadence Changes
+
+When Guru later clarifies that a person's relationship category was wrong, adjust the existing setup instead of recreating everything:
+
+- Update the person note and birthday task first, including the relationship, tags, cadence explanation, reasoning, open questions, and changelog.
+- Preserve any still-valid existing cron jobs, especially day-of birthday reminders, rather than deleting/recreating them.
+- Add only the missing reminder touchpoints when upgrading cadence, e.g. colleague → close friend adds 1-week and day-before jobs while keeping day-of.
+- Remove only the no-longer-valid extra touchpoints when downgrading cadence, e.g. close friend → colleague removes advance jobs while keeping day-of.
+- After cron changes, resync the task metadata: `cron_id`, `next_reminder_time`, `last_5_reminder_times`, and changelog.
+- Update `~/my-data/user-context.md` with the corrected relationship/cadence and cron IDs.
+- If the correction is durable relationship knowledge likely to matter outside the vault, update long-term memory too.

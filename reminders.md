@@ -14,6 +14,7 @@ Load this file whenever creating, modifying, snoozing, cancelling, or asking abo
 - Default reminder: 1 day before due_date at 9:00 AM user's timezone
 - If `due_date` is today or tomorrow, remind in a few hours instead
 - Save the cron job_id in the task frontmatter as `cron_id` so it can be updated later
+- After creating the cron, update the task note's existing creation/queued-reminder changelog entry in place when possible instead of adding a near-duplicate second line. The final changelog should usually have one clean creation entry that includes both the original task capture and the linked cron/scheduled reminder details.
 - On task creation, initialize `last_5_reminder_times` in the task frontmatter to `never sent` unless this is a legacy reminder migration with known prior history
 - **Never create a cron without a backing task file first**
 - **If a task is very likely to want a reminder (which is almost always true), create a cron immediately after creating the file.** User will request a change to the reminder schedule if needed.
@@ -28,6 +29,8 @@ For task reminders, keep these fields synced in the task frontmatter:
 - `cron_id` — the cron job ID (or comma-separated list if multiple crons)
 - `next_reminder_time` — the earliest upcoming scheduled run when a cron exists; if no reminder is currently scheduled, explicitly write `next_reminder_time: none scheduled` instead of leaving it blank
 - `last_5_reminder_times` — a comma-separated newest-first history of the most recent reminder times that actually fired or were sent, capped at 5 entries. For a brand-new task with no reminder history, explicitly write `last_5_reminder_times: never sent`. If prior history for an older task cannot be reconstructed confidently, write `last_5_reminder_times: unknown`.
+
+When a cron reminder is currently firing, verify `next_reminder_time` from live cron state before editing the task note. Prefer `cronjob(action="list")` when available; if the cron run needs local state verification, `/home/ilangurudev/.hermes/cron/jobs.json` contains the persisted job definitions, including `id`, `schedule_display`, `next_run_at`, `last_run_at`, and `last_status`. Convert `next_run_at` into Guru's display timezone/format before writing it into frontmatter.
 
 ## Reminder Timing Rules
 
@@ -49,6 +52,16 @@ When the user replies to a cron reminder on Telegram, the quoted snippet identif
 - **"Snooze"** → If vague, pick a reasonable snooze duration (e.g. 1 day, 3 days, 1 week depending on the task context), update the cron job, append the reminder that just fired to `last_5_reminder_times` (newest first, max 5), then explicitly tell Guru when they'll get the next reminder. Offer alternatives like "I'll remind you again Friday. Want a different day?"
 - **"Remind me [day/time]"** → calculate the date, update cron to that day at 9:00 AM, confirm the new time
 - **"Re-establish" / "set that up again" / "bring that reminder back"** → FIRST search existing task files, people/project notes, active cron jobs, and session history to recover the previous setup before creating anything new. Reuse the prior cadence/checklist/linking style when recoverable; only ask a follow-up if the old schedule is genuinely unclear.
+
+## When the user corrects reminder details
+
+If Guru corrects a captured reminder detail after creation — for example a voice transcription mistake, who the people are, or who the output should go to — update the existing reminder rather than creating a duplicate:
+- Edit/rename the existing task file if the title slug is now wrong, preserving the original changelog/audit trail.
+- Update the cron job schedule, name, and prompt to point at the new task path and corrected task summary.
+- Sync task frontmatter fields (`updated`, `tags`, `area`, `cron_id`, `next_reminder_time`, `last_5_reminder_times`) after the cron update.
+- Update linked person/project/context notes to reflect the corrected facts and remove stale open questions.
+- Search the vault for stale wrong terms/old slugs and clean them up where they represent the same task, while leaving changelog entries as historical context when useful.
+- If the corrected detail is durable (e.g. people are work colleagues), save it to memory compactly.
 
 ## When the task scope changes
 

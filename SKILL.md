@@ -36,6 +36,8 @@ Load these files only when the conversation triggers them. Each is self-containe
 |---|---|
 | Creating, modifying, snoozing, or asking about tasks/reminders/crons | [reminders.md](./reminders.md) |
 | Birthday reminders specifically (in addition to reminders.md) | [birthday-reminders.md](./birthday-reminders.md) |
+| Morning/night check-ins | [checkins.md](./checkins/checkins.md) |
+| Journal synthesis/autocomplete from check-ins | [journal-synthesis.md](./checkins/journal-synthesis.md) |
 | Vault-wide cleanup or canonicalization pass | [cleanup-guidance.md](./cleanup-guidance.md) |
 | Editing rules for Hermes for improving skill's own utility. If editing this skill or associated files, always follow the guidance outlined in this doc | [skill-edit.md](./skill-edit.md) |
 
